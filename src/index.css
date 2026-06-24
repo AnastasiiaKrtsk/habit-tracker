@@ -1,19 +1,18 @@
+@import 'tailwindcss';
+
 :root {
-  --text-xs: 0.75rem; /* 12px */
-  --text-sm: 0.875rem; /* 14px */
-  --text-md: 1rem; /* 16px */
-  --text-lg: 1.25rem; /* 20px */
-  --text-xl: 1.5rem; /* 24px */
-  --text-2xl: 2rem; /* 32px */
-
   --bg: #060411;
-  --panel: #0d081e;
+  --panel: #26242b;
 
-  --text: #cac1e6;
+  --text: #e1dcee;
+  --second: #aaa1c5;
   --muted: #504968;
 
-  --primary: #6438c1;
-  --primary-hover: #7a51d2;
+  --primary-color: #6438c1;
+  --primary-hover-color: #7a51d2;
+  --secondary-color: #5d5682;
+  --ghost-destructive-color: #26242b;
+  --ghost-destructive-hover-color: #821919;
 
   --border: #1a0f40;
 
@@ -21,59 +20,25 @@
 
   --transition-fast: 0.2s ease;
 }
+
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
 }
 
 body {
-  height: 100%;
   font-family: 'Inter', system-ui, sans-serif;
   background: var(--bg);
   color: var(--text);
-  min-height: 100vh;
   line-height: 1.4;
 }
 
-main {
-  padding: 15px;
-}
-button {
-  min-width: 35px;
-  height: 35px;
-
-  color: #cac1e6;
-  background-color: #6438c1;
-
-  border: none;
-  border-radius: 3px;
-
-  transition: background-color 0.2s ease;
+/* Chrome, Safari, Edge */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
-button:hover {
-  cursor: pointer;
-  background-color: #7a51d2;
-}
-
-header {
-  display: flex;
-  justify-content: space-between;
-  padding: 15px;
-  margin-bottom: 20px;
-}
-
-footer {
-  margin-top: auto;
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-  background-color: #0d081e;
-}
-
-#app {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+/* Firefox */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
