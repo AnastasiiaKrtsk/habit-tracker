@@ -1,17 +1,29 @@
 import { Button } from './Button.tsx';
-import { endOfWeek, format, startOfWeek } from 'date-fns';
+import { endOfWeek, format, isSameDay, startOfWeek } from 'date-fns';
+import { type Habit } from './HabitList.tsx';
 
 const fromDate = startOfWeek(new Date(), { weekStartsOn: 1 });
 const toDate = endOfWeek(new Date(), { weekStartsOn: 1 });
 
-console.log();
-export function Header() {
+export function Header({ habits }: Habit[]) {
+  const totalHabits = habits.length;
+  let todayCount = 0;
+
+  function getTodayStats(habits) {
+    const today = new Date();
+    habits.forEach((h) => {
+      if (h.completions.some((c) => isSameDay(c, today))) {
+        todayCount++;
+      }
+    });
+  }
+  getTodayStats(habits);
   return (
     <header className="flex items-center justify-between">
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-bold">Habit Tracker</h1>
         <span className="text-400 text-sm text-(--second)">
-          1 / 1 done today
+          {todayCount} / {totalHabits} done today
         </span>
       </div>
 
@@ -20,7 +32,7 @@ export function Header() {
           {format(fromDate, 'MMM d')} - {format(toDate, 'MMM d')}
         </span>
         <div className="flex items-center gap-3">
-          <Button>Prev</Button>
+          <Button onClick={getTodayStats}>Prev</Button>
           <Button>Next</Button>
         </div>
       </div>
