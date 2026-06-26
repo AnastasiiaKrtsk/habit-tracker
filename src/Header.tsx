@@ -1,39 +1,40 @@
 import { Button } from './Button.tsx';
-import { endOfWeek, format, isSameDay, startOfWeek } from 'date-fns';
-import { type Habit } from './HabitList.tsx';
+import { format, isToday } from 'date-fns';
+import { useHabit } from './context/habit.context.ts';
 
-const fromDate = startOfWeek(new Date(), { weekStartsOn: 1 });
-const toDate = endOfWeek(new Date(), { weekStartsOn: 1 });
+type HeaderProps = {
+  visibleDates: Date[];
+  onPrev: () => void;
+  onNext: () => void;
+};
+export function Header({ visibleDates, onPrev, onNext }: HeaderProps) {
+  const { habits } = useHabit();
 
-export function Header({ habits }: Habit[]) {
-  const totalHabits = habits.length;
-  let todayCount = 0;
+  const doneToday = habits.filter((h) =>
+    h.completions.some((c) => isToday(c)),
+  ).length;
 
-  function getTodayStats(habits) {
-    const today = new Date();
-    habits.forEach((h) => {
-      if (h.completions.some((c) => isSameDay(c, today))) {
-        todayCount++;
-      }
-    });
-  }
-  getTodayStats(habits);
+  const dateRange = `${format(visibleDates[0], 'MMM d')} - ${format(visibleDates.at(-1)!, 'MMM d')}`;
+
   return (
     <header className="flex items-center justify-between">
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-bold">Habit Tracker</h1>
         <span className="text-400 text-sm text-(--second)">
-          {todayCount} / {totalHabits} done today
+          {doneToday} / {habits.length} done today
         </span>
       </div>
 
       <div className="flex flex-col gap-1 items-end">
-        <span className="text-sm text-(--second)">
-          {format(fromDate, 'MMM d')} - {format(toDate, 'MMM d')}
-        </span>
+        <span className="text-sm text-(--second)">{dateRange}</span>
         <div className="flex items-center gap-3">
-          <Button onClick={getTodayStats}>Prev</Button>
-          <Button>Next</Button>
+          <Button onClick={onPrev}>Prev</Button>
+          <Button
+            onClick={onNext}
+            disabled={visibleDates.some((d) => isToday(d))}
+          >
+            Next
+          </Button>
         </div>
       </div>
     </header>

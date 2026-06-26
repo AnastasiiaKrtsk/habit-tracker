@@ -1,60 +1,29 @@
-import {
-  eachDayOfInterval,
-  endOfWeek,
-  format,
-  isFuture,
-  isSameDay,
-  startOfWeek,
-  subDays,
-} from 'date-fns';
+import { format, isFuture, isSameDay, subDays } from 'date-fns';
 import { Button } from './Button';
+import { useHabit, type Habit } from './context/habit.context';
 
-export type Habit = {
-  id: string;
-  title: string;
-  completions: Date[];
-};
-
-type HabitListProps = {
-  habits: Habit[];
-  deleteHabit: (id: string) => void;
-  toggleHabit: (id: string, date: Date) => void;
-};
-
-type HabitItemProps = {
-  habit: Habit;
-  deleteHabit: (id: string) => void;
-  toggleHabit: (id: string, date: Date) => void;
-};
-
-export function HabitList({
-  habits,
-  deleteHabit,
-  toggleHabit,
-}: HabitListProps) {
+export function HabitList({ visibleDates }: { visibleDates: Date[] }) {
+  const { habits } = useHabit();
   if (habits.length === 0) {
     return <p className="text-center py-12">No habits yet.</p>;
   }
   return (
     <ul className="flex flex-col gap-3">
       {habits.map((el) => (
-        <HabitItem
-          habit={el}
-          deleteHabit={deleteHabit}
-          toggleHabit={toggleHabit}
-          key={el.id}
-        />
+        <HabitItem habit={el} key={el.id} visibleDates={visibleDates} />
       ))}
     </ul>
   );
 }
 
-function HabitItem({ habit, deleteHabit, toggleHabit }: HabitItemProps) {
-  //Mon Jun 22 2026 00:00:00 GMT+0000
-  const eachDay = eachDayOfInterval({
-    start: startOfWeek(new Date(), { weekStartsOn: 1 }),
-    end: endOfWeek(new Date(), { weekStartsOn: 1 }),
-  });
+function HabitItem({
+  habit,
+  visibleDates,
+}: {
+  habit: Habit;
+  visibleDates: Date[];
+}) {
+  const { deleteHabit, toggleHabit } = useHabit();
 
   const streak = getStreak(habit.completions);
   return (
@@ -77,7 +46,7 @@ function HabitItem({ habit, deleteHabit, toggleHabit }: HabitItemProps) {
         </Button>
       </div>
       <div className="flex gap-1.5 overflow-x-scroll no-scrollbar ">
-        {eachDay.map((date) => (
+        {visibleDates.map((date) => (
           <Button
             onClick={() => toggleHabit(habit.id, date)}
             className="flex flex-1 flex-col items-center gap-0.5 rounded-lg text-xs"
